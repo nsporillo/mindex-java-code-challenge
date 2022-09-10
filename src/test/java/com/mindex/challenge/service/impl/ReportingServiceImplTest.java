@@ -63,7 +63,7 @@ public class ReportingServiceImplTest {
         // 1 director has 3 managers directly reporting
         // each manager has 3 support engineers directly reporting
         // 9 support engineers, 3 managers = 12 direct reports for this director
-        assertEquals(reportingStructure.getNumberOfReports(), 12);
+        assertEquals(12, reportingStructure.getNumberOfReports());
     }
 
     private Employee generateEmployeeWithThreeReports() {
