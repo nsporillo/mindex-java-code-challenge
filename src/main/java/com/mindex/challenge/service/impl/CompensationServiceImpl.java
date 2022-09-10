@@ -1,12 +1,16 @@
 package com.mindex.challenge.service.impl;
 
 import com.mindex.challenge.dao.CompensationRepository;
+import com.mindex.challenge.dao.EmployeeRepository;
 import com.mindex.challenge.data.Compensation;
+import com.mindex.challenge.data.Employee;
 import com.mindex.challenge.service.CompensationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 public class CompensationServiceImpl implements CompensationService {
@@ -16,10 +20,14 @@ public class CompensationServiceImpl implements CompensationService {
     @Autowired
     private CompensationRepository compensationRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
     @Override
     public Compensation create(Compensation compensation) {
         LOG.debug("Creating Compensation [{}]", compensation);
 
+        compensation.setEffectiveTime(Instant.now());
         compensationRepository.insert(compensation);
 
         return compensation;
@@ -27,14 +35,13 @@ public class CompensationServiceImpl implements CompensationService {
 
     @Override
     public Compensation read(String id) {
-        LOG.debug("Fetching employee with id [{}]", id);
+        LOG.debug("Fetching compensation with id [{}]", id);
+        Employee employee = employeeRepository.findByEmployeeId(id);
 
-        Compensation compensation = compensationRepository.findByEmployeeId(id);
-
-        if (compensation == null) {
+        if (employee == null) {
             throw new RuntimeException("Invalid employeeId: " + id);
         }
 
-        return compensation;
+        return compensationRepository.findByEmployee(employee);
     }
 }
